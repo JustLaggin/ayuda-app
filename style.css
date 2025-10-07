@@ -1,0 +1,252 @@
+/* === GLOBAL === */
+body {
+  font-family: "Poppins", "Segoe UI", sans-serif;
+  background: linear-gradient(to bottom right, #e3f2fd, #bbdefb);
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column; /* ✅ makes the banner stick at the top */
+}
+
+/* === AUTH CONTAINER (login/register) === */
+.auth-container {
+  background: white;
+  padding: 2rem;
+  border-radius: 15px;
+  width: 360px;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  animation: fadeIn 0.5s ease-in;
+  margin: auto; /* ✅ center only auth container, not entire body */
+}
+
+.auth-container h1 {
+  color: #1565c0;
+  margin-bottom: 0.3rem;
+}
+
+.tagline {
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 1.5rem;
+}
+
+/* === FORMS === */
+.form {
+  display: none;
+  flex-direction: column;
+}
+
+.form.active {
+  display: flex;
+}
+
+input {
+  margin-bottom: 1rem;
+  padding: 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+button[type="submit"] {
+  background: #1565c0;
+  color: white;
+  border: none;
+  padding: 0.9rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s ease;
+}
+
+button[type="submit"]:hover {
+  background: #0d47a1;
+}
+
+.switch-text {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+.switch-text a {
+  color: #1565c0;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.switch-text a:hover {
+  text-decoration: underline;
+}
+
+#statusMsg {
+  text-align: center;
+  color: #d32f2f;
+  font-size: 0.9rem;
+  margin-top: 1rem;
+}
+
+/* === DASHBOARD BANNER === */
+.banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #1565c0;
+  color: white;
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.banner-left h1 {
+  font-size: 1.6rem;
+  margin: 0;
+}
+
+.banner-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+#userName {
+  font-weight: 500;
+}
+
+#settingsBtn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.4rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+#settingsBtn:hover {
+  transform: rotate(25deg);
+}
+
+/* === DASHBOARD CONTENT === */
+main {
+  flex: 1;
+  padding: 2rem;
+}
+
+.ayuda-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.ayuda {
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.ayuda h3 {
+  color: #1565c0;
+  margin-bottom: 0.5rem;
+}
+
+.ayuda button {
+  background: #1565c0;
+  color: white;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.ayuda button:hover {
+  background: #0d47a1;
+}
+
+/* === ANIMATIONS === */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.fade-in { animation: fadeIn 0.4s ease forwards; }
+
+@keyframes fadeOut {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0; transform: scale(0.97); }
+}
+
+.fade-out { animation: fadeOut 0.3s ease forwards; }
+
+.update-profile-container {
+  max-width: 400px;
+  background: white;
+  margin: 3rem auto;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.update-profile-container h2 {
+  text-align: center;
+  color: #1565c0;
+  margin-bottom: 1.5rem;
+}
+
+.update-profile-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.update-profile-container input {
+  padding: 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.update-profile-container button[type="submit"] {
+  background: #1565c0;
+  color: white;
+  border: none;
+  padding: 0.9rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.update-profile-container button[type="submit"]:hover {
+  background: #0d47a1;
+}
+
+.logout {
+  background: #e53935;
+  color: white;
+  border: none;
+  padding: 0.8rem;
+  border-radius: 8px;
+  width: 100%;
+  margin-top: 1.5rem;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.logout:hover {
+  background: #b71c1c;
+}
+
+#backBtn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.4rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+#backBtn:hover {
+  transform: translateX(-5px);
+}

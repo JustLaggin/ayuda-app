@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Salinlahi 🏛️ | User Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+  />
+</head>
+<body>
+  <!-- === Top Banner === -->
+  <header class="banner">
+    <div class="banner-left">
+      <h1>Salinlahi 🏛️</h1>
+    </div>
+
+    <div class="banner-right">
+      <span id="userName">Welcome, User 👋</span>
+      <button id="settingsBtn" title="Profile Settings">
+        <i class="fa-solid fa-gear"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- === Ayudas Section === -->
+  <main>
+    <section id="ayudasList" class="ayuda-list">
+      <p>Loading available ayudas...</p>
+    </section>
+  </main>
+
+  <!-- === Scripts === -->
+  <script type="module" src="./firebase-config.js"></script>
+  <script type="module" src="./user.js"></script>
+</body>
+</html>
