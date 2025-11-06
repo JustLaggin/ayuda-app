@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard - Salinlahi 🏛️</title>
+  <link rel="stylesheet" href="/Auth/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
+
+  
+</head>
+<body>
+  <!-- Header / Banner -->
+  <header class="banner">
+    <div class="banner-left">
+      <h1>Salinlahi - Admin 🏛️</h1>
+    </div>
+    <div class="banner-right">
+      <span id="userName">Welcome, admin 👋</span>
+      <button id="settingsBtn" title="Profile Settings">
+        <i class="fa-solid fa-gear"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Dashboard Content -->
+  <main>
+    <!-- Create Ayuda Section -->
+    <section class="create-ayuda">
+      <h2>Create New Ayuda</h2>
+
+      <form id="Ayudaform" class="form active">
+      <div class="form-group">
+        <label for="Ayuda Title">Ayuda Title</label>
+        <input type="text" id="ayudatitle" placeholder="Enter Title" required />
+      </div>
+      
+
+      <div class="form-group">
+        <label for="amount">Amount (₱)</label>
+        <input type="number" id="amount" min="0" placeholder="Enter Amount" required />
+      </div>
+
+      <div class="location-section">
+        <div class="form-group">
+          <label for="city">City / Municipality</label>
+          <select id="city" required>
+            <option value="" disabled selected>Select City / Municipality</option>
+            <option value="Batangas City">Batangas City</option>
+            <option value="Lipa City">Lipa City</option>
+            <option value="Tanauan City">Tanauan City</option>
+            <option value="Sto. Tomas City">Sto. Tomas City</option>
+            <option value="Bauan">Bauan</option>
+            <option value="San Jose">San Jose</option>
+            <option value="Taal">Taal</option>
+            <option value="All">All</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="barangay">Barangay</label>
+          <select id="barangay" disabled >
+            <option value="" disabled selected>Select Barangay</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="schedule">Schedule</label>
+        <input id="schedule" type="date" />
+      </div>
+
+      <div class="form-group">
+        <label for="requirements">Requirements</label>
+        <input id="requirements" placeholder="List of Requirements" />
+      </div>
+
+      <div class="form-group">
+        <label for="address">Claiming Area</label>
+        <input id="address" type="text" placeholder="e.g. 123 Mabini St." />
+      </div>
+
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea id="description" placeholder="Describe the Ayuda" required></textarea>
+      </div>
+
+      <button type="submit">Create Ayuda</button>
+    </section>
+
+    <!-- Existing Ayudas Section -->
+    <section class="existing-ayudas">
+      <h2>Existing Ayudas</h2>
+      <div id="ayudasList" class="ayuda-list"></div>
+    </section>
+  </main>
+
+  
+<div id="applicantsModal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn" id="closeApplicants">&times;</span>
+    <h2>Applicants</h2>
+    <div id="applicantsList">
+      <p>Loading applicants...</p>
+    </div>
+  </div>
+</div>
+
+  <script type="module" src="../firebase-config.js"></script>
+  <script type="module" src="admin.js"></script>
+</body>
+</html>

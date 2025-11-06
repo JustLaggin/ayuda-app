@@ -1,4 +1,4 @@
-import { auth, db } from './firebase-config.js';
+import { auth, db } from '../firebase-config.js';
 import { 
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword,
@@ -49,9 +49,12 @@ registerForm.addEventListener('submit', async (e) => {
   const lastName = document.getElementById('registerLastName').value.trim();
   const email = document.getElementById('registerEmail').value.trim();
   const password = document.getElementById('registerPassword').value.trim();
+  const Address = document.getElementById('registerAddress').value.trim();
+  const Current_Ayudas = [];
+  const Ayuda_Claim_History = [];
 
-  if (!firstName || !lastName || !email || !password) {
-    alert("Please fill in all fields.");
+  if (!firstName || !lastName || !email || !password || !Address) {
+    statusMsg.textContent = "⚠️ Please fill in all fields.";
     return;
   }
 
@@ -64,16 +67,36 @@ registerForm.addEventListener('submit', async (e) => {
       lastName,
       fullName: `${firstName} ${lastName}`,
       email,
-      role: "user"
+      Address,
+      role: "user",
+      Current_Ayudas,
+      Ayuda_Claim_History,
     });
 
     await signOut(auth);
-    alert("✅ Registration successful! Please log in.");
-    showLogin();
+
+    // 💡 Smooth transition after success
+    statusMsg.style.color = "#2e7d32"; // green
+    statusMsg.textContent = "✅ Registration successful! Redirecting to login...";
+
+    formContainer.classList.add("fade-out");
+
+    setTimeout(() => {
+      // Switch form
+      registerForm.classList.remove("active");
+      loginForm.classList.add("active");
+      formContainer.classList.remove("fade-out");
+      formContainer.classList.add("fade-in");
+
+      // Update status message after transition
+      statusMsg.style.color = "#1565c0";
+      statusMsg.textContent = "Registrain complete please log in to continue.";
+    }, 1200); // smooth delay before switching forms
 
   } catch (error) {
     console.error("Error during registration:", error);
-    alert(error.message);
+    statusMsg.style.color = "#d32f2f";
+    statusMsg.textContent = "❌ " + error.message;
   }
 });
 
@@ -89,14 +112,16 @@ loginForm.addEventListener('submit', async (e) => {
     const userData = userDoc.data();
 
     if (userData.role === 'admin') {
-      window.location = 'admin-dashboard.html';
+      window.location = '../Admin/admin-dashboard.html';
     } else {
-      window.location = 'user-dashboard.html';
+      window.location.href = '../user/user-dashboard.html';
     }
 
   } catch (err) {
     console.error("Login error:", err);
-    statusMsg.textContent = '❌ ' + err.message;
+    if(err.message=="Firebase: Error (auth/invalid-credential).")
+    statusMsg.textContent = '❌ Invalid Email/Password';
+    else statusMsg.textContent = '❌' + err.message;
   }
 });
 
@@ -124,5 +149,12 @@ forgotPassword.addEventListener('click', async (e) => {
   } catch (error) {
     console.error("Password reset error:", error);
     alert(error.message);
+  }
+});
+
+window.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('login') === 'true') {
+    showLogin(); // already defined function
   }
 });
