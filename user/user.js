@@ -16,7 +16,10 @@ import {
 const userNameEl = document.getElementById('userName');
 const ayudasList = document.getElementById('ayudasList');
 const settingsBtn = document.getElementById('settingsBtn');
-
+const requirementsList = document.getElementById('requirementsList');
+const confirmApplyBtn = document.getElementById('confirmApplyBtn');
+const fileUpload = document.getElementById('fileUpload');
+const uploadedFilesPreview = document.getElementById('uploadedFilesPreview');
 // --- AUTH STATE ---
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
@@ -127,23 +130,54 @@ function formatDateOrTBA(dateValue) {
 // --- APPLY FUNCTION ---
 window.applyAyuda = async (aid) => {
   const user = auth.currentUser;
-  if (!user) return alert("Please log in first.");
 
   try {
-    const ayudaRef = doc(db, "ayudas", aid);
     const userRef = doc(db, "users", user.uid);
+    const ayudaRef = doc(db, "ayudas", aid);
+    const ayudaSnap = await getDoc(ayudaRef);
+    const ayuda = ayudaSnap.data();
+    if(!ayuda.requirements == ''){
+    // 🟢 Show the modal
+    requirementsModal.style.display = 'flex';
+    requirementsList.innerHTML = '<p>Loading requirements...</p>';
 
-    await updateDoc(ayudaRef, {
-      applicants: arrayUnion(user.uid)
-    });
+    // 🟢 Display ayuda requirements
+    const reqs = Array.isArray(ayuda.requirements)
+      ? ayuda.requirements
+      : ayuda.requirements.split(',').map(r => r.trim());
 
-    await updateDoc(userRef, {
-      Current_Ayudas: arrayUnion(aid)
-    });
+    requirementsList.innerHTML = reqs
+      .map((r, i) => `<p><strong>${i + 1}.</strong> ${r}</p>`)
+      .join('');
 
-    alert("✅ Application submitted successfully!");
-    loadAyudas(user.uid);
+    // 🟢 When user confirms application
+    confirmApplyBtn.onclick = async () => {
+      if (!uploadedFilesPreview.innerHTML == ''){
 
+      await updateDoc(ayudaRef, {
+        applicants: arrayUnion(user.uid)
+      });
+
+      await updateDoc(userRef, {
+        Current_Ayudas: arrayUnion(aid)
+      });
+
+      alert("✅ Application submitted!");
+      requirementsModal.style.display = 'none';
+      loadAyudas(user.uid);} else alert('No Files Uploaded')
+    };}else {
+      await updateDoc(ayudaRef, {
+        applicants: arrayUnion(user.uid)
+      });
+
+      await updateDoc(userRef, {
+        Current_Ayudas: arrayUnion(aid)
+      });
+
+      alert("✅ Application submitted!");
+      requirementsModal.style.display = 'none';
+      loadAyudas(user.uid);
+    }
   } catch (error) {
     console.error("🔥 Error applying for ayuda:", error);
     alert("⚠️ Failed to apply. Check console for details.");
@@ -157,3 +191,34 @@ if (settingsBtn) {
     window.location.href = '../../update-profile.html';
   });
 }
+
+closeRequirements.addEventListener('click', () => {
+  requirementsModal.style.display = 'none';
+});
+
+fileUpload.addEventListener('change', (e) => {
+  const files = Array.from(e.target.files);
+  uploadedFilesPreview.innerHTML = '';
+
+  files.forEach((file, index) => {
+    const fileItem = document.createElement('div');
+    fileItem.classList.add('uploaded-file');
+    fileItem.innerHTML = `
+      <span>${file.name}</span>
+      <button onclick="removeFile(${index})">&times;</button>
+    `;
+    uploadedFilesPreview.appendChild(fileItem);
+  });
+
+  // Store files temporarily in global for easy access during confirm
+  window.selectedFiles = files;
+});
+
+// Remove a file from preview
+window.removeFile = (index) => {
+  window.selectedFiles.splice(index, 1);
+  const dataTransfer = new DataTransfer();
+  window.selectedFiles.forEach(file => dataTransfer.items.add(file));
+  fileUpload.files = dataTransfer.files;
+  fileUpload.dispatchEvent(new Event('change'));
+};

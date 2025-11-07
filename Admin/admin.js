@@ -69,7 +69,7 @@ Ayudaform.addEventListener('submit', async (e) => {
       city: city.value,
       barangay: barangay.value || 'All',
       schedule: schedule.value || 'TBA',
-      requirements: requirements.value || 'None',
+      requirements: requirements.value || '',
       claiming_area: address.value || 'TBA',
       description: description.value,
       status: true,
