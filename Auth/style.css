@@ -412,3 +412,36 @@ main {
   color: red;
   cursor: pointer;
 }
+
+.applicant-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+  padding: 10px 0;
+}
+
+.applicant-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.approve-btn {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.reject-btn {
+  background-color: #E74C3C;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.approve-btn:hover, .reject-btn:hover {
+  opacity: 0.85;
+}

@@ -106,6 +106,80 @@
   </div>
 </div>
 
+<div id="beneficiaryModal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn" id="closeBeneficiary">&times;</span>
+    <h2>Beneficiaries</h2>
+    <div id="beneficiaryList">
+      <p>Loading Beneficiaries...</p>
+    </div>
+  </div>
+</div>
+
+<div id="updateAyudaModal" class="modal">
+  <div class="modal-content">
+    <span id="closeUpdateModal" class="close">&times;</span>
+    <h2 id="updateAyudaTitle">Update Ayuda</h2>
+    <form id="updateAyudaForm">
+
+      <div class="form-group">
+        <label for="updateAmount">Amount (₱)</label>
+        <input type="number" id="updateAmount" min="0" required />
+      </div>
+
+      <div class="form-group">
+        <label for="updateCity">City / Municipality</label>
+        <select id="updateCity" required>
+          <option value="" disabled selected>Select City / Municipality</option>
+          <option value="Batangas City">Batangas City</option>
+          <option value="Lipa City">Lipa City</option>
+          <option value="Tanauan City">Tanauan City</option>
+          <option value="Sto. Tomas City">Sto. Tomas City</option>
+          <option value="Bauan">Bauan</option>
+          <option value="San Jose">San Jose</option>
+          <option value="Rosario">Rosario</option>
+          <option value="Taal">Taal</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="updateBarangay">Barangay</label>
+        <input type="text" id="updateBarangay" required />
+      </div>
+
+      <div class="form-group">
+        <label for="updateClaimingArea">Claiming Area</label>
+        <input type="text" id="updateClaimingArea" required />
+      </div>
+
+      <div class="form-group">
+        <label for="updateDescription">Description</label>
+        <textarea id="updateDescription" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="updateRequirements">Requirements</label>
+        <input type="text" id="updateRequirements" required />
+      </div>
+
+      <div class="form-group">
+        <label for="updateSchedule">Schedule (Date & Time)</label>
+        <input type="datetime-local" id="updateSchedule" required />
+      </div>
+
+      <div class="form-group">
+        <label for="updateStatus">Status</label>
+        <select id="updateStatus" required>
+          <option value="true">Open (Users can apply)</option>
+          <option value="false">Closed (Applications disabled)</option>
+        </select>
+      </div>
+
+      <button type="submit" class="primary-btn">Update Ayuda</button>
+    </form>
+  </div>
+</div>
+
   <script type="module" src="../firebase-config.js"></script>
   <script type="module" src="admin.js"></script>
 </body>

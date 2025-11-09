@@ -9,6 +9,7 @@ import {
   getDocs, 
   doc, 
   getDoc, 
+  updateDoc,
   serverTimestamp 
 } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
 
@@ -28,6 +29,15 @@ const requirements = document.getElementById('requirements');
 const address = document.getElementById('address');
 const description = document.getElementById('description');
 
+// Form fields
+const updateAmount = document.getElementById('updateAmount');
+const updateCity = document.getElementById('updateCity');
+const updateBarangay = document.getElementById('updateBarangay');
+const updateClaimingArea = document.getElementById('updateClaimingArea');
+const updateDescription = document.getElementById('updateDescription');
+const updateRequirements = document.getElementById('updateRequirements');
+const updateSchedule = document.getElementById('updateSchedule');
+const updateStatus = document.getElementById('updateStatus');
 
 /* ========== AUTH STATE LISTENER ========== */
 onAuthStateChanged(auth, async (user) => {
@@ -52,11 +62,9 @@ onAuthStateChanged(auth, async (user) => {
 });
 
 /* ========== SETTINGS BUTTON ========== */
-if (settingsBtn) {
-  settingsBtn.addEventListener('click', () => {
+settingsBtn.addEventListener('click', () => {
     window.location.href = '../../update-profile.html';
   });
-}
 
 /* ========== CREATE NEW AYUDA ========== */
 Ayudaform.addEventListener('submit', async (e) => {
@@ -247,7 +255,7 @@ city.addEventListener('change', () => {
 
 window.viewApplicants = async function (ayudaId) {
   try {
-    applicantsModal.style.display = 'flex'; // Show modal
+    applicantsModal.style.display = 'flex';
     applicantsList.innerHTML = '<p>Loading applicants...</p>';
 
     const ayudaRef = doc(db, 'ayudas', ayudaId);
@@ -273,16 +281,26 @@ window.viewApplicants = async function (ayudaId) {
         const userSnap = await getDoc(userRef);
         if (userSnap.exists()) {
           const userData = userSnap.data();
-          return `${userData.fullName } `;
+          return { uid, fullName: userData.fullName || 'Unknown User' };
         } else {
-          return 'Unknown User';
+          return { uid, fullName: 'Unknown User' };
         }
       })
     );
 
-    // Render applicant list
+    // Render applicant list with Approve/Reject buttons
     applicantsList.innerHTML = applicantDocs
-      .map((name, i) => `<p><strong>${i + 1}.</strong> ${name}</p>`)
+      .map(
+        (a, i) => `
+        <div class="applicant-item">
+          <p><strong>${i + 1}.</strong> ${a.fullName}</p>
+          <div class="applicant-actions">
+            <button class="approve-btn" onclick="approveApplicant('${ayudaId}', '${a.uid}')">✅ Approve</button>
+            <button class="reject-btn" onclick="rejectApplicant('${ayudaId}', '${a.uid}')">❌ Reject</button>
+          </div>
+        </div>
+      `
+      )
       .join('');
 
   } catch (error) {
@@ -291,8 +309,172 @@ window.viewApplicants = async function (ayudaId) {
   }
 };
 
+window.approveApplicant = async function (ayudaId, userId) {
+  try {
+    const ayudaRef = doc(db, 'ayudas', ayudaId);
+    const ayudaSnap = await getDoc(ayudaRef);
 
+    if (!ayudaSnap.exists()) return alert('Ayuda not found.');
+
+    const ayuda = ayudaSnap.data();
+
+    // Remove from applicants and add to beneficiaries
+    const newApplicants = (ayuda.applicants || []).filter(uid => uid !== userId);
+    const newBeneficiaries = [...(ayuda.beneficiaries || []), userId];
+
+    await updateDoc(ayudaRef, {
+      applicants: newApplicants,
+      beneficiaries: newBeneficiaries
+    });
+
+    alert('✅ Applicant approved!');
+    viewApplicants(ayudaId); // refresh modal
+  } catch (error) {
+    console.error('Error approving applicant:', error);
+    alert('⚠️ Failed to approve applicant.');
+  }
+};
+
+// Reject applicant: remove from applicants[]
+window.rejectApplicant = async function (ayudaId, userId) {
+  try {
+    const ayudaRef = doc(db, 'ayudas', ayudaId);
+    const ayudaSnap = await getDoc(ayudaRef);
+
+    if (!ayudaSnap.exists()) return alert('Ayuda not found.');
+
+    const ayuda = ayudaSnap.data();
+    const newApplicants = (ayuda.applicants || []).filter(uid => uid !== userId);
+
+    await updateDoc(ayudaRef, {
+      applicants: newApplicants
+    });
+
+    alert('❌ Applicant rejected.');
+    viewApplicants(ayudaId); // refresh modal
+  } catch (error) {
+    console.error('Error rejecting applicant:', error);
+    alert('⚠️ Failed to reject applicant.');
+  }
+};
+
+window.viewBeneficiary = async function (ayudaId) {
+  try {
+    beneficiaryModal.style.display = 'flex'; // Show modal
+    beneficiaryList.innerHTML = '<p>Loading applicants...</p>';
+
+    const ayudaRef = doc(db, 'ayudas', ayudaId);
+    const ayudaSnap = await getDoc(ayudaRef);
+
+    if (!ayudaSnap.exists()) {
+      beneficiaryList.innerHTML = '<p>Ayuda not found.</p>';
+      return;
+    }
+
+    const ayuda = ayudaSnap.data();
+    const beneficiaries = ayuda.beneficiaries || [];
+
+    if (beneficiaries.length === 0) {
+      beneficiaryList.innerHTML = '<p>No beneficiary yet.</p>';
+      return;
+    }
+
+    // 🟢 Fetch user info for each applicant UID
+    const beneficiarydocs = await Promise.all(
+      beneficiaries.map(async (uid) => {
+        const userRef = doc(db, 'users', uid);
+        const userSnap = await getDoc(userRef);
+        if (userSnap.exists()) {
+          const userData = userSnap.data();
+          return `${userData.fullName } `;
+        } else {
+          return 'Unknown User';
+        }
+      })
+    );
+
+    // Render applicant list
+    beneficiaryList.innerHTML = beneficiarydocs
+      .map((name, i) => `<p><strong>${i + 1}.</strong> ${name}</p>`)
+      .join('');
+
+  } catch (error) {
+    console.error('Error fetching applicants:', error);
+    beneficiaryList.innerHTML = '<p>Failed to load applicants.</p>';
+  }
+};
+
+window.updateData = async function (ayudaId) {
+  try {
+    const ayudaRef = doc(db, 'ayudas', ayudaId);
+    const ayudaSnap = await getDoc(ayudaRef);
+    if (!ayudaSnap.exists()) {
+      alert("Ayuda not found.");
+      return;
+    }
+
+    const ayuda = ayudaSnap.data();
+
+    // Fill fields
+    updateAyudaTitle.textContent = ayuda.title;
+    updateAmount.value = ayuda.amount || 0;
+    updateCity.value = ayuda.city || '';
+    updateBarangay.value = ayuda.barangay || '';
+    updateClaimingArea.value = ayuda.claiming_area || '';
+    updateDescription.value = ayuda.description || '';
+    updateRequirements.value = ayuda.requirements || '';
+    updateSchedule.value = ayuda.schedule ? ayuda.schedule : '';
+    updateStatus.value = ayuda.status ? 'true' : 'false';
+
+    // Show modal
+    updateAyudaModal.style.display = 'flex';
+
+    // Save ID for submission
+    updateAyudaForm.dataset.id = ayudaId;
+
+  } catch (error) {
+    console.error("Error opening update modal:", error);
+  }
+};
+
+// Close modal
+closeUpdateModal.addEventListener('click', () => {
+  updateAyudaModal.style.display = 'none';
+});
+
+// Submit form
+updateAyudaForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const ayudaId = updateAyudaForm.dataset.id;
+  const ayudaRef = doc(db, 'ayudas', ayudaId);
+
+  try {
+    await updateDoc(ayudaRef, {
+      amount: parseFloat(updateAmount.value),
+      city: updateCity.value,
+      barangay: updateBarangay.value,
+      claiming_area: updateClaimingArea.value,
+      description: updateDescription.value,
+      requirements: updateRequirements.value,
+      schedule: updateSchedule.value,
+      status: updateStatus.value === 'true'
+    });
+
+    alert("✅ Ayuda updated successfully!");
+    updateAyudaModal.style.display = 'none';
+    loadAyudas(); // Refresh the list
+
+  } catch (error) {
+    console.error("Error updating ayuda:", error);
+    alert("⚠️ Failed to update ayuda. Check console for details.");
+  }
+});
 // Close modal when clicking the X button
 closeApplicants.addEventListener('click', () => {
   applicantsModal.style.display = 'none';
+});
+
+closeBeneficiary.addEventListener('click', () => {
+  beneficiaryModal.style.display = 'none';
 });
