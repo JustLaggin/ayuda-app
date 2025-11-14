@@ -1,103 +1,132 @@
 /* 🌐 Global Layout */
 body {
-  font-family: "Segoe UI", sans-serif;
-  background: #f5f7fa;
+  font-family: "Segoe UI", "Poppins", sans-serif;
+  background: linear-gradient(to bottom right, #f6f9fc, #e9eff6);
   margin: 0;
   padding: 0;
+  color: #2e3a45;
+  -webkit-font-smoothing: antialiased;
 }
 
 /* 🏛️ Dashboard Header */
 .dashboard-header {
-  background: #1976d2;
-  color: white;
+  background: linear-gradient(135deg, #0d47a1, #1976d2);
+  color: #fff;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 2rem;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  padding: 1.4rem 2.4rem;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(4px);
 }
 
 .dashboard-header h1 {
-  font-size: 1.3rem;
+  font-size: 1.7rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
   margin: 0;
 }
 
 .user-info {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.4rem;
 }
 
 #userName {
   font-weight: 500;
+  font-size: 1.05rem;
 }
 
+/* 🔘 Logout Button */
 #logoutBtn {
-  background: #f44336;
+  background: #ef5350;
   color: white;
   border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 5px;
+  padding: 0.6rem 1.3rem;
+  border-radius: 10px;
   cursor: pointer;
-  transition: background 0.3s ease;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  transition: 0.25s ease;
 }
 
 #logoutBtn:hover {
   background: #c62828;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(198, 40, 40, 0.4);
 }
 
 /* 📋 Main Section */
 main {
-  padding: 2rem;
+  padding: 2.8rem 2.4rem;
 }
 
 main h2 {
-  color: #1976d2;
-  margin-bottom: 1.5rem;
-  font-weight: 600;
+  color: #0d47a1;
+  margin-bottom: 2.2rem;
+  font-weight: 700;
+  font-size: 1.6rem;
+  letter-spacing: 0.6px;
 }
 
 /* 🧾 Ayuda Cards */
 .ayuda-list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
 }
 
 .ayuda {
-  background: white;
-  border-radius: 10px;
-  padding: 1rem;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease;
+  background: #fff;
+  border-radius: 16px;
+  padding: 1.6rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #dce3ee;
+  transition: transform 0.28s ease, box-shadow 0.28s ease;
+  position: relative;
 }
 
 .ayuda:hover {
-  transform: scale(1.02);
+  transform: translateY(-7px);
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.18);
 }
 
 .ayuda h3 {
   color: #1976d2;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.7rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
 }
 
 .ayuda p {
-  color: #333;
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.5rem;
+  color: #48535f;
+  line-height: 1.45;
+  font-size: 0.95rem;
 }
 
+/* 🟦 Button inside card */
 .ayuda button {
-  background: #1976d2;
+  background: linear-gradient(135deg, #1e88e5, #1565c0);
   color: white;
   border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 5px;
+  padding: 0.7rem 1.3rem;
+  border-radius: 10px;
   cursor: pointer;
-  transition: background 0.3s ease;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-top: 0.8rem;
+  letter-spacing: 0.3px;
+  transition: 0.26s ease;
 }
 
 .ayuda button:hover {
   background: #0d47a1;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 14px rgba(13, 71, 161, 0.35);
 }
 
 /* 💻 Responsive */
@@ -105,11 +134,15 @@ main h2 {
   .dashboard-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.5rem;
+    gap: 1rem;
+    padding: 1.2rem;
   }
 
   main {
-    padding: 1rem;
+    padding: 1.6rem;
+  }
+
+  .ayuda-list {
+    gap: 1.4rem;
   }
 }
-
