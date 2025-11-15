@@ -18,6 +18,7 @@ const settingsBtn = document.getElementById('settingsBtn');
 const userNameEl = document.getElementById('userName');
 const Ayudaform = document.getElementById('Ayudaform');
 const ayudasList = document.getElementById('ayudasList');
+const applicantsModal = document.getElementById('applicantsModal');
 
 /* Input fields */
 const ayudatitle = document.getElementById('ayudatitle');
@@ -38,7 +39,23 @@ const updateDescription = document.getElementById('updateDescription');
 const updateRequirements = document.getElementById('updateRequirements');
 const updateSchedule = document.getElementById('updateSchedule');
 const updateStatus = document.getElementById('updateStatus');
+const updateAyudaForm = document.getElementById('updateAyudaForm');
 
+const closeApplicants = document.getElementById('closeApplicants');
+const closeBeneficiary = document.getElementById('closeBeneficiary');
+const closeUpdateModal = document.getElementById('closeUpdateModal');
+
+console.log('DOM check ->',
+  { applicantsModal: !!applicantsModal,
+    applicantsList: !!applicantsList,
+    closeApplicants: !!closeApplicants,
+    beneficiaryModal: !!beneficiaryModal,
+    beneficiaryList: !!beneficiaryList,
+    closeBeneficiary: !!closeBeneficiary,
+    updateAyudaModal: !!updateAyudaModal,
+    closeUpdateModal: !!closeUpdateModal,
+    updateAyudaTitle: !!updateAyudaTitle
+  });
 /* ========== AUTH STATE LISTENER ========== */
 onAuthStateChanged(auth, async (user) => {
 
@@ -252,7 +269,15 @@ city.addEventListener('change', () => {
 
   barangay.disabled = false;
 });
+// Close APPLICANTS modal
+closeApplicants.addEventListener('click', () => {
+  applicantsModal.style.display = 'none';
+});
 
+// Close BENEFICIARIES modal
+closeBeneficiary.addEventListener('click', () => {
+  beneficiaryModal.style.display = 'none';
+});
 window.viewApplicants = async function (ayudaId) {
   try {
     applicantsModal.style.display = 'flex';
@@ -469,12 +494,4 @@ updateAyudaForm.addEventListener('submit', async (e) => {
     console.error("Error updating ayuda:", error);
     alert("⚠️ Failed to update ayuda. Check console for details.");
   }
-});
-// Close modal when clicking the X button
-closeApplicants.addEventListener('click', () => {
-  applicantsModal.style.display = 'none';
-});
-
-closeBeneficiary.addEventListener('click', () => {
-  beneficiaryModal.style.display = 'none';
 });
