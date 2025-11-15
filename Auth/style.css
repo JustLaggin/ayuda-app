@@ -68,11 +68,40 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Animated background pattern */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+  animation: backgroundShift 15s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes backgroundShift {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(20px, 20px); }
 }
 
 /* Smooth transitions */
 a, button, input, select, textarea {
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Focus visible for accessibility */
+*:focus-visible {
+  outline: 3px solid var(--primary-600);
+  outline-offset: 2px;
 }
 
 /* ==========================================================
@@ -87,6 +116,28 @@ a, button, input, select, textarea {
   box-shadow: var(--shadow-xl);
   margin: auto;
   animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  z-index: 1;
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.auth-container::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(135deg, var(--primary-600), var(--secondary-500));
+  border-radius: var(--radius-xl);
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.auth-container:hover::before {
+  opacity: 0.1;
 }
 
 .auth-container h1 {
@@ -131,8 +182,10 @@ input, select, textarea {
 input:focus, select:focus, textarea:focus {
   border-color: var(--primary-600);
   background: white;
-  box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.1);
+  box-shadow: 0 0 0 4px rgba(21, 101, 192, 0.1), 
+              0 1px 3px rgba(0, 0, 0, 0.1);
   outline: none;
+  transform: translateY(-1px);
 }
 
 input::placeholder, textarea::placeholder {
@@ -140,7 +193,7 @@ input::placeholder, textarea::placeholder {
 }
 
 button[type="submit"], .primary-btn {
-  background: var(--primary-600);
+  background: linear-gradient(135deg, var(--primary-600) 0%, var(--secondary-600) 100%);
   color: white;
   border: none;
   padding: 0.875rem 1.5rem;
@@ -154,14 +207,29 @@ button[type="submit"], .primary-btn {
   overflow: hidden;
 }
 
+button[type="submit"]::before, .primary-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+button[type="submit"]:hover::before, .primary-btn:hover::before {
+  left: 100%;
+}
+
 button[type="submit"]:hover, .primary-btn:hover {
-  background: var(--primary-700);
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-1px);
+  box-shadow: var(--shadow-lg), 0 0 20px rgba(21, 101, 192, 0.4);
+  transform: translateY(-2px);
 }
 
 button[type="submit"]:active, .primary-btn:active {
   transform: translateY(0);
+  box-shadow: var(--shadow-sm);
 }
 
 .switch-text {
@@ -198,15 +266,27 @@ button[type="submit"]:active, .primary-btn:active {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: white;
+  background: rgba(255, 255, 255, 0.95);
   color: var(--gray-900);
   padding: var(--space-5) var(--space-6);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-md), 0 4px 20px rgba(0, 0, 0, 0.08);
   position: sticky;
   top: 0;
   z-index: 100;
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--gray-200);
+  animation: slideDown 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .banner-left h1 {
@@ -235,16 +315,36 @@ button[type="submit"]:active, .primary-btn:active {
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+#settingsBtn::before, #backBtn::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: var(--primary-600);
+  border-radius: 50%;
+  transform: scale(0);
+  transition: transform 0.3s ease;
+  opacity: 0.1;
+}
+
+#settingsBtn:hover::before, #backBtn:hover::before {
+  transform: scale(1.5);
 }
 
 #settingsBtn:hover {
   background: var(--gray-200);
   transform: rotate(90deg);
+  color: var(--primary-600);
 }
 
 #backBtn:hover {
   background: var(--gray-200);
   transform: translateX(-4px);
+  color: var(--primary-600);
 }
 
 #userName {
@@ -281,6 +381,7 @@ main {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
+  cursor: pointer;
 }
 
 .ayuda::before {
@@ -295,14 +396,37 @@ main {
   transition: transform 0.3s ease;
 }
 
+.ayuda::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--primary-600), var(--secondary-500));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 0;
+  pointer-events: none;
+}
+
 .ayuda:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: var(--shadow-xl), 0 12px 40px rgba(102, 126, 234, 0.25);
   border-color: var(--primary-600);
 }
 
 .ayuda:hover::before {
   transform: scaleX(1);
+}
+
+.ayuda:hover::after {
+  opacity: 0.03;
+}
+
+.ayuda > * {
+  position: relative;
+  z-index: 1;
 }
 
 .ayuda h3 {
@@ -311,6 +435,15 @@ main {
   margin-bottom: var(--space-3);
   font-weight: 700;
   letter-spacing: -0.025em;
+  background: linear-gradient(135deg, var(--gray-900), var(--primary-600));
+  background-clip: text;
+  -webkit-background-clip: text;
+  transition: all 0.3s ease;
+}
+
+.ayuda:hover h3 {
+  -webkit-text-fill-color: transparent;
+  transform: translateX(4px);
 }
 
 .ayuda p {
@@ -394,6 +527,7 @@ main {
   display: flex;
   flex-direction: column;
   margin-bottom: var(--space-5);
+  position: relative;
 }
 
 .form-group label {
@@ -667,4 +801,271 @@ input[type="number"] {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--gray-400);
+}
+
+/* ==========================================================
+   🎨 ADDITIONAL DESIGN ENHANCEMENTS
+========================================================== */
+
+/* Floating label effect for inputs */
+input:focus + label,
+input:not(:placeholder-shown) + label,
+textarea:focus + label,
+textarea:not(:placeholder-shown) + label {
+  transform: translateY(-1.5rem) scale(0.85);
+  color: var(--primary-600);
+}
+
+/* Glassmorphism effect */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, var(--primary-600), var(--secondary-500));
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Pulse animation for important elements */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+.pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Shimmer loading effect */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.shimmer {
+  background: linear-gradient(90deg, 
+    var(--gray-200) 25%, 
+    var(--gray-100) 50%, 
+    var(--gray-200) 75%
+  );
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* Tooltip styles */
+[data-tooltip] {
+  position: relative;
+  cursor: help;
+}
+
+[data-tooltip]::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-8px);
+  padding: var(--space-2) var(--space-3);
+  background: var(--gray-900);
+  color: white;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 1000;
+}
+
+[data-tooltip]:hover::before {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-4px);
+}
+
+/* Stagger animation for lists */
+@keyframes staggerIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ayuda-list .ayuda {
+  animation: staggerIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+.ayuda-list .ayuda:nth-child(1) { animation-delay: 0.05s; }
+.ayuda-list .ayuda:nth-child(2) { animation-delay: 0.1s; }
+.ayuda-list .ayuda:nth-child(3) { animation-delay: 0.15s; }
+.ayuda-list .ayuda:nth-child(4) { animation-delay: 0.2s; }
+.ayuda-list .ayuda:nth-child(5) { animation-delay: 0.25s; }
+.ayuda-list .ayuda:nth-child(6) { animation-delay: 0.3s; }
+
+/* Ripple effect for buttons */
+.ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.ripple:active::after {
+  width: 300px;
+  height: 300px;
+}
+
+/* Card badges */
+.badge {
+  display: inline-block;
+  padding: var(--space-1) var(--space-3);
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.badge-primary {
+  background: var(--primary-50);
+  color: var(--primary-700);
+}
+
+.badge-success {
+  background: #d1fae5;
+  color: var(--success-600);
+}
+
+.badge-danger {
+  background: #fee2e2;
+  color: var(--danger-600);
+}
+
+/* Skeleton loader */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--gray-200) 25%,
+    var(--gray-100) 50%,
+    var(--gray-200) 75%
+  );
+  background-size: 200% 100%;
+  animation: loading 1.5s ease-in-out infinite;
+  border-radius: var(--radius-md);
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Progress bar */
+.progress-bar {
+  width: 100%;
+  height: 4px;
+  background: var(--gray-200);
+  border-radius: 9999px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-bar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary-600), var(--secondary-500));
+  border-radius: 9999px;
+  transition: width 0.3s ease;
+}
+
+/* Floating action button */
+.fab {
+  position: fixed;
+  bottom: var(--space-6);
+  right: var(--space-6);
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-600), var(--secondary-500));
+  color: white;
+  border: none;
+  box-shadow: var(--shadow-lg), 0 4px 20px rgba(102, 126, 234, 0.4);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 99;
+}
+
+.fab:hover {
+  transform: scale(1.1) rotate(90deg);
+  box-shadow: var(--shadow-xl), 0 8px 30px rgba(102, 126, 234, 0.5);
+}
+
+/* Enhanced card interactions */
+.interactive-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.interactive-card:hover {
+  transform: translateY(-4px) translateX(2px);
+}
+
+/* Glow effect */
+.glow {
+  box-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
+}
+
+/* Gradient border */
+.gradient-border {
+  border: 2px solid transparent;
+  background: linear-gradient(white, white) padding-box,
+              linear-gradient(135deg, var(--primary-600), var(--secondary-500)) border-box;
+}
+
+/* Text selection */
+::selection {
+  background: var(--primary-600);
+  color: white;
+}
+
+::-moz-selection {
+  background: var(--primary-600);
+  color: white;
 }
